@@ -10,6 +10,7 @@ namespace BookingsManagerAPI.Controllers
     public class BookingsController : Controller
     {
         private readonly BookingsManagerAPIDbContext _bookingsManagerAPIDbContext;
+        private const string bookingNotFoundErrorMessage = "Booking with the given Id does not exists";
 
         public BookingsController(BookingsManagerAPIDbContext bookingsManagerAPIDbContext)
         {
@@ -20,6 +21,18 @@ namespace BookingsManagerAPI.Controllers
         public async Task<IActionResult> GetBookings()
         {
             return Ok(await _bookingsManagerAPIDbContext.Bookings.ToListAsync());
+        }
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> GetBooking([FromRoute] Guid id)
+        {
+            var booking = await _bookingsManagerAPIDbContext.Bookings.FindAsync(id);
+            if (booking == null)
+            {
+                return NotFound(bookingNotFoundErrorMessage);
+            }
+            return Ok(booking);
         }
 
         [HttpPost]
@@ -38,7 +51,44 @@ namespace BookingsManagerAPI.Controllers
             await _bookingsManagerAPIDbContext.SaveChangesAsync();
 
             return Ok(newBooking);
-        } 
+        }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateBooking([FromRoute] Guid id, UpdateBookingRequest updateBookingRequest)
+        {
+            var booking = await _bookingsManagerAPIDbContext.Bookings.FindAsync(id);
+
+            if(booking == null)
+            {
+                return NotFound(bookingNotFoundErrorMessage);
+            }
+
+            booking.GuestId = updateBookingRequest.GuestId;
+            booking.CheckInDate = updateBookingRequest.CheckInDate;
+            booking.CheckOutDate = updateBookingRequest.CheckOutDate;
+            booking.TotalAmount = updateBookingRequest.TotalAmount;
+
+            await _bookingsManagerAPIDbContext.SaveChangesAsync();
+
+            return Ok(booking);
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteBooking([FromRoute] Guid id)
+        {
+            var booking = await _bookingsManagerAPIDbContext.Bookings.FindAsync(id);
+
+            if (booking == null)
+            {
+                return NotFound(bookingNotFoundErrorMessage);
+            }
+
+            _bookingsManagerAPIDbContext.Bookings.Remove(booking);
+            await _bookingsManagerAPIDbContext.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
 
