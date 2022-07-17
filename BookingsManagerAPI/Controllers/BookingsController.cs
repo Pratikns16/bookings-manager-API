@@ -1,10 +1,13 @@
-﻿using BookingsManagerAPI.Data;
-using BookingsManagerAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BookingsManagerAPI.Data;
+using BookingsManagerAPI.Entities;
+using BookingsManagerAPI.Models;
+using BookingsManagerAPI.Helpers;
 
 namespace BookingsManagerAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BookingsController : Controller
