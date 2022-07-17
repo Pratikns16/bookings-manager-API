@@ -1,5 +1,4 @@
-﻿using System;
-using BookingsManagerAPI.Models;
+﻿using BookingsManagerAPI.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsManagerAPI.Data

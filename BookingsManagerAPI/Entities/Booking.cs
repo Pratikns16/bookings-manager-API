@@ -1,5 +1,4 @@
-﻿using System;
-namespace BookingsManagerAPI.Models
+﻿namespace BookingsManagerAPI.Entities
 {
     public class Booking
     {
